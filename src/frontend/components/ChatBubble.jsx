@@ -1,6 +1,8 @@
+import ReactMarkdown from "react-markdown";
+
 export function ChatBubble({ content }) {
   return (
-    <div className="flex justify-end">
+    <div className={`flex ${content.role === "user" ? "justify-end" : "justify-start"}`}>
       <div
         className="
           max-w-[75%]
@@ -14,7 +16,17 @@ export function ChatBubble({ content }) {
           text-primary-foreground
         "
       >
-        {content}
+        <ReactMarkdown
+          components={{
+            table: ({node, ...props}) => (
+              <div className="markdown-table-wrapper">
+                <table {...props} />
+              </div>
+            ),
+          }}
+        >
+          {content.content}
+        </ReactMarkdown>
       </div>
     </div>
   );
