@@ -6,9 +6,18 @@ datasource db {
   provider = "sqlite"
 }
 
-model messages {
-  id         Int       @id @default(autoincrement())
-  content    String
-  role       String
-  created_at DateTime? @default(now())
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  messages  Message[]
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  role           String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
 }
