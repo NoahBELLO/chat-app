@@ -21,15 +21,10 @@ export async function getMessages(conversationId, limit = 50) {
   });
 }
 
-export async function getGroqResponse(userMessage) {
+export async function getGroqResponse(messages) {
   try {
     const response = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
+      messages: messages,
       model: "openai/gpt-oss-20b",
       // temperature: 0.7, // décommentez pour ajuster la créativité
     });
