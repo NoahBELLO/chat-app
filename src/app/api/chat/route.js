@@ -41,8 +41,14 @@ export async function POST(req) {
   let conversation;
   let isNewConversation = false;
 
-  if (body.conversationId) {
-    conversation = { id: body.conversationId };
+  let conversationId = undefined;
+  if (body.conversationId !== undefined && body.conversationId !== null && body.conversationId !== "") {
+    conversationId = parseInt(body.conversationId, 10);
+    if (isNaN(conversationId)) throw new Error("Invalid conversationId");
+  }
+
+  if (conversationId) {
+    conversation = { id: conversationId };
   } else {
     conversation = await createConversation();
     isNewConversation = true;
@@ -55,15 +61,15 @@ export async function POST(req) {
   }
 
   const message = await saveMessage(body.content, body.role, conversation.id);
-  
+
   const history = await getMessages(conversation.id);
-  const limitedHistory = history.slice(-MAX_HISTORY); 
-  const formattedHistory = limitedHistory.map(m => ({
+  const limitedHistory = history.slice(-MAX_HISTORY);
+  const formattedHistory = limitedHistory.map((m) => ({
     role: m.role,
     content: m.content,
   }));
 
-  if (!history.some(m => m.id === message.id)) {
+  if (!history.some((m) => m.id === message.id)) {
     formattedHistory.push({ role: message.role, content: message.content });
   }
 
@@ -71,8 +77,8 @@ export async function POST(req) {
     const titre = await getGroqResponse([
       {
         role: "user",
-        content: `Génère un titre court (3 à 6 mots) pour cette conversation : "${body.content}"`
-      }
+        content: `Génère un titre court (3 à 6 mots) pour cette conversation : "${body.content}"`,
+      },
     ]);
     await updateConversationName(conversation.id, titre);
   }
