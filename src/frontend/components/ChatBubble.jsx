@@ -1,4 +1,5 @@
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm"; 
 
 export function ChatBubble({ content }) {
   return (
@@ -17,8 +18,9 @@ export function ChatBubble({ content }) {
         "
       >
         <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
           components={{
-            table: ({node, ...props}) => (
+            table: ({ _node, ...props }) => (
               <div className="markdown-table-wrapper">
                 <table {...props} />
               </div>

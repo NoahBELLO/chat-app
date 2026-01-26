@@ -59,7 +59,7 @@ export default function ChatPage() {
         setMessages([]);
       }
     } else {
-      const data = await sendMessage(message, currentConv.id);
+      await sendMessage(message, currentConv.id);
       await fetchMessages(currentConv.id);
     }
   }
@@ -99,7 +99,7 @@ export default function ChatPage() {
         <div className="flex-1 min-h-0 overflow-y-auto p-4">
           <div className="mx-auto flex max-w-[768px] flex-col gap-2">
             {messages.map((msg, index) => (
-              <ChatBubble key={index} content={msg} />
+              <ChatBubble key={msg.id} content={msg} />
             ))}
             {(loading || loadingConvs || loadingMessages) && (
               <div className="flex justify-start">
@@ -115,10 +115,10 @@ export default function ChatPage() {
         {/* INPUT FIXE */}
         <div className="border-t bg-background">
           <ChatInput
-            value={input}
-            onChange={setInput}
+            // value={input}
+            // onChange={setInput}
             onSend={handleSend}
-            loading={loading}
+            disabled={loading}
           />
         </div>
       </div>

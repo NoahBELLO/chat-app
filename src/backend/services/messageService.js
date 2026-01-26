@@ -14,11 +14,12 @@ export async function saveMessage(content, role, conversationId) {
 }
 
 export async function getMessages(conversationId, limit = 50) {
-  return prisma.message.findMany({
+  const messages = await prisma.message.findMany({
     where: { conversationId },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     take: limit,
   });
+  return messages.reverse();
 }
 
 export async function getGroqResponse(messages) {
