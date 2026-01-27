@@ -12,6 +12,12 @@ export async function getConversations() {
   });
 }
 
+export async function getConversationById(id) {
+  return prisma.conversation.findUnique({
+    where: { id: Number(id) },
+  });
+}
+
 export async function updateConversationName(conversationId, name) {
   return prisma.conversation.update({
     where: { id: conversationId },

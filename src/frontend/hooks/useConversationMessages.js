@@ -9,7 +9,7 @@ export default function useConversationMessages() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/chat?conversationId=${conversationId}`);
+      const res = await fetch(`/api/chat?conversationId=${encodeURIComponent(conversationId)}`);
       if (!res.ok) throw new Error("Erreur lors du chargement des messages");
       const data = await res.json();
       setMessages(data);

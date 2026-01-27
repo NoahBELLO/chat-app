@@ -11,7 +11,7 @@ import Sidebar from "@/frontend/components/Sidebar";
 
 export default function ChatPage() {
   const { sendMessage, loading, error } = useChatApi();
-  const [input, setInput] = React.useState("");
+  // const [input, setInput] = React.useState("");
   const [sidebarVisible, setSidebarVisible] = React.useState(true);
   const {
     conversations,
@@ -37,7 +37,6 @@ export default function ChatPage() {
   function handleNewConversation() {
     setCurrentConv(null);
     setMessages([]);
-    setInput("");
   }
 
   async function handleSelectConversation(conv) {
@@ -47,7 +46,6 @@ export default function ChatPage() {
 
   async function handleSend(message) {
     if (!message.trim()) return;
-    setInput("");
 
     if (!currentConv) {
       const data = await sendMessage(message);
@@ -115,8 +113,6 @@ export default function ChatPage() {
         {/* INPUT FIXE */}
         <div className="border-t bg-background">
           <ChatInput
-            // value={input}
-            // onChange={setInput}
             onSend={handleSend}
             disabled={loading}
           />

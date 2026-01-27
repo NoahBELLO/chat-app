@@ -20,7 +20,7 @@ export function ChatBubble({ content }) {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            table: ({ _node, ...props }) => (
+            table: ({ node: _node, ...props }) => (
               <div className="markdown-table-wrapper">
                 <table {...props} />
               </div>
