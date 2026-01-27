@@ -5,6 +5,7 @@ import {
   getGroqResponse,
 } from "@/backend/services/messageService";
 import {
+  getConversationById,
   createConversation,
   updateConversationName,
 } from "@/backend/services/conversationService";
@@ -44,10 +45,22 @@ export async function POST(req) {
   let conversationId = undefined;
   if (body.conversationId !== undefined && body.conversationId !== null && body.conversationId !== "") {
     conversationId = parseInt(body.conversationId, 10);
-    if (isNaN(conversationId)) throw new Error("Invalid conversationId");
+    if (isNaN(conversationId)) {
+      return NextResponse.json(
+        { error: "conversationId invalide" },
+        { status: 400 },
+      );
+    }
   }
 
   if (conversationId) {
+    const existing = await getConversationById?.(conversationId);
+    if (!existing) {
+      return NextResponse.json(
+        { error: "Aucune conversation trouvée avec cet id" },
+        { status: 404 },
+      );
+    }
     conversation = { id: conversationId };
   } else {
     conversation = await createConversation();
