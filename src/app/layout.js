@@ -14,16 +14,19 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "GOJO GPT",
-  description: "Une application de chat propulsée par l'IA inspirée de Jujutsu Kaisen.",
+  description:
+    "Une application de chat propulsée par l'IA inspirée de Jujutsu Kaisen.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="fr">
+    <html lang="fr" className="h-dvh overflow-hidden">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh overflow-hidden relative`}
       >
-        <AsciiBackground opacity={0.18} blur={0} scale={1.05} drift />
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <AsciiBackground opacity={0.18} blur={0} scale={1.05} drift />
+        </div>
         {children}
       </body>
     </html>
