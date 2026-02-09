@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
+import { auth } from "../lib/firebase";
 
 export default function useConversationApi() {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  async function getToken() {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Utilisateur non connecté");
+    return await user.getIdToken();
+  }
+
+  useEffect(async () => {
     setLoading(true);
     setError(null);
-    fetch("/api/conversation")
+    const token = await getToken();
+    fetch("/api/conversation", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => {
         if (!res.ok)
           throw new Error("Erreur lors du chargement des conversations");
@@ -23,7 +33,10 @@ export default function useConversationApi() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/conversation");
+      const token = await getToken();
+      const res = await fetch("/api/conversation", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok)
         throw new Error("Erreur lors du chargement des conversations");
       const data = await res.json();
@@ -41,7 +54,15 @@ export default function useConversationApi() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/conversation", { method: "POST" });
+      const token = await getToken();
+      const res = await fetch("/api/conversation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ participants }),
+      });
       if (!res.ok) throw new Error("Erreur lors de la création");
       const conv = await res.json();
       setConversations((prev) => [conv, ...prev]);
