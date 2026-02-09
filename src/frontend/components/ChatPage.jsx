@@ -11,14 +11,15 @@ import Sidebar from "@/frontend/components/Sidebar";
 
 export default function ChatPage() {
   const { sendMessage, loading, error } = useChatApi();
-  // const [input, setInput] = React.useState("");
   const [sidebarVisible, setSidebarVisible] = React.useState(true);
+
   const {
     conversations,
     loading: loadingConvs,
     error: errorConvs,
     fetchConversations,
   } = useConversationApi();
+
   const {
     messages,
     setMessages,
@@ -47,24 +48,37 @@ export default function ChatPage() {
   async function handleSend(message) {
     if (!message.trim()) return;
 
-    if (!currentConv) {
-      const data = await sendMessage(message);
-      if (data && data.conversationId) {
-        await fetchConversations(); 
-        setCurrentConv({ id: data.conversationId });
-        await fetchMessages(data.conversationId);
+    const tempId = `temp-${Date.now()}`;
+    const optimisticUserMsg = {
+      id: tempId,
+      role: "user",
+      content: message,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, optimisticUserMsg]);
+
+    try {
+      if (!currentConv) {
+        const data = await sendMessage(message);
+
+        if (data && data.conversationId) {
+          await fetchConversations();
+          setCurrentConv({ id: data.conversationId });
+          await fetchMessages(data.conversationId);
+        } else {
+        }
       } else {
-        setMessages([]);
+        await sendMessage(message, currentConv.id);
+        await fetchMessages(currentConv.id);
       }
-    } else {
-      await sendMessage(message, currentConv.id);
-      await fetchMessages(currentConv.id);
+    } catch (e) {
+      console.error(e);
     }
   }
 
   return (
     <div className="flex flex-row h-full min-h-0">
-      {/* Sidebar sur toute la hauteur */}
       <Sidebar
         conversations={conversations}
         onNewConversation={handleNewConversation}
@@ -85,7 +99,6 @@ export default function ChatPage() {
         </Button>
       )}
 
-      {/* Zone principale */}
       <div className="flex-1 flex flex-col h-full min-h-0">
         {(error || errorConvs || errorMessages) && (
           <div className="bg-red-100 text-red-700 px-4 py-2 text-center">
@@ -93,12 +106,12 @@ export default function ChatPage() {
           </div>
         )}
 
-        {/* ZONE SCROLLABLE */}
         <div className="flex-1 min-h-0 overflow-y-auto p-4">
           <div className="mx-auto flex max-w-[768px] flex-col gap-2">
-            {messages.map((msg, index) => (
+            {messages.map((msg) => (
               <ChatBubble key={msg.id} content={msg} />
             ))}
+
             {(loading || loadingConvs || loadingMessages) && (
               <div className="flex justify-start">
                 <div className="animate-pulse bg-muted text-muted-foreground rounded-2xl px-4 py-2 text-sm">
@@ -106,16 +119,13 @@ export default function ChatPage() {
                 </div>
               </div>
             )}
+
             <div ref={endRef} />
           </div>
         </div>
 
-        {/* INPUT FIXE */}
         <div className="border-t bg-background">
-          <ChatInput
-            onSend={handleSend}
-            disabled={loading}
-          />
+          <ChatInput onSend={handleSend} disabled={loading} />
         </div>
       </div>
     </div>
