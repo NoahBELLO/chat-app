@@ -41,3 +41,4 @@ yarn-error.log*
 next-env.d.ts
 *.sql
 /src/generated/prisma
+chatbot-nextjs-4d64a-firebase-adminsdk-fbsvc-3412891c16.json
