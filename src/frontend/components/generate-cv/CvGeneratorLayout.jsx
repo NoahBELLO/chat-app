@@ -9,6 +9,8 @@ import ExperiencesSection from "@/frontend/components/generate-cv/sections/Exper
 import LanguagesSection from "@/frontend/components/generate-cv/sections/LanguagesSection";
 import EducationSection from "@/frontend/components/generate-cv/sections/EducationSection";
 import ResultSection from "@/frontend/components/generate-cv/sections/ResultSection";
+import ResultSectionLetter from "./sections/ResultSectionLetter";
+import useCoverLetterGeneratorApi from "@/frontend/hooks/useCoverLetterGeneratorApi";
 
 const emptyExperience = () => ({
   title: "",
@@ -40,6 +42,9 @@ function isBlankEducation(ed) {
 
 export default function CvGeneratorLayout() {
   const { generate, loading, error } = useCvGeneratorApi();
+  const { generateLetter, loadingLetter, errorLetter } =
+    useCoverLetterGeneratorApi();
+  const [wantCoverLetter, setWantCoverLetter] = React.useState(false);
 
   const [sidebarVisible, setSidebarVisible] = React.useState(true);
   const [jobOffer, setJobOffer] = React.useState("");
@@ -47,6 +52,7 @@ export default function CvGeneratorLayout() {
   const [languages, setLanguages] = React.useState([emptyLanguage()]);
   const [education, setEducation] = React.useState([emptyEducation()]);
   const [result, setResult] = React.useState(null);
+  const [resultLetter, setResultLetter] = React.useState(null);
 
   const resultRef = React.useRef(null);
 
@@ -90,7 +96,9 @@ export default function CvGeneratorLayout() {
     );
   }
 
-  const canGenerate = jobOffer.trim().length > 0 && experiences.some((e) => !isBlankExperience(e));
+  const canGenerate =
+    jobOffer.trim().length > 0 &&
+    experiences.some((e) => !isBlankExperience(e));
 
   async function handleGenerate() {
     if (!canGenerate || loading) return;
@@ -111,6 +119,14 @@ export default function CvGeneratorLayout() {
       const data = await generate(fd);
       if (data) setResult(data);
       else setResult(data);
+
+      if (wantCoverLetter) {
+        const letterData = await generateLetter(fd);
+        if (letterData) setResultLetter(letterData);
+        else setResultLetter(null);
+      } else {
+        setResultLetter(null);
+      }
     } catch (e) {
       console.error(e);
       alert("Erreur pendant la génération. Voir console.");
@@ -153,6 +169,12 @@ export default function CvGeneratorLayout() {
           <div className="bg-red-100 text-red-700 px-4 py-2 text-center">
             {error}
           </div>
+        )} 
+
+        {errorLetter && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 text-center">
+            {errorLetter}
+          </div>
         )}
 
         <div className="border-b bg-background">
@@ -169,6 +191,15 @@ export default function CvGeneratorLayout() {
             <Button onClick={handleGenerate} disabled={!canGenerate || loading}>
               {loading ? "Génération..." : "Générer"}
             </Button>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={wantCoverLetter}
+                onChange={(e) => setWantCoverLetter(e.target.checked)}
+              />
+              Générer aussi une lettre de motivation
+            </label>
           </div>
         </div>
 
@@ -200,6 +231,12 @@ export default function CvGeneratorLayout() {
             <ResultSection
               loading={loading}
               result={result}
+              resultRef={resultRef}
+            />
+
+            <ResultSectionLetter
+              loading={loadingLetter}
+              result={resultLetter}
               resultRef={resultRef}
             />
           </div>
