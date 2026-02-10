@@ -78,9 +78,13 @@ export default function Sidebar({
 
       {user !== null && user !== undefined && (
         <>
-          <div
+          <button
+            type="button"
             className={`absolute bottom-0 left-0 w-full p-3 border-t bg-card flex items-center gap-2 cursor-pointer transition ${menuOpen ? "bg-muted" : "hover:bg-muted"}`}
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            aria-controls="user-menu"
+            tabIndex={0}
           >
             <img
               src={user.photoURL || "/img/defaultAvatar.webp"}
@@ -90,7 +94,7 @@ export default function Sidebar({
             <span className="font-medium text-sm">
               {user.displayName || user.email.split("@")[0]}
             </span>
-          </div>
+          </button>
           {menuOpen && (
             <UserMenu
               user={user}
@@ -102,6 +106,7 @@ export default function Sidebar({
                 setMenuOpen(false);
                 setTimeout(() => setShowLogoutPopup(true), 0);
               }}
+              id="user-menu"
             />
           )}
 

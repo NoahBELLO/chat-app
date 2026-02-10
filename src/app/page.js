@@ -6,8 +6,7 @@ import AuthForm from "@/frontend/components/AuthForm";
 
 export default function Page() {
   const user = useAuth();
-  if (!user) return <AuthForm />;
-
+  
   if (user === undefined) {
     return (
       <div className="flex items-center justify-center h-dvh">
@@ -16,7 +15,9 @@ export default function Page() {
       </div>
     );
   }
-
+  
+  if (!user) return <AuthForm />;
+  
   return (
     <div className="h-dvh flex flex-col">
       <div className="p-4">

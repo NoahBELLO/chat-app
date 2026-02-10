@@ -11,7 +11,11 @@ export async function GET(req) {
     if (!authHeader)
       return NextResponse.json({ error: "No token provided" }, { status: 401 });
 
-    const token = authHeader.split(" ")[1]; 
+    const match = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (!match)
+      return NextResponse.json({ error: "Invalid authorization format" }, { status: 401 });
+
+    const token = match[1]; 
     const decoded = await verifyToken(token);
 
     const conversations = await getConversations(decoded.uid);

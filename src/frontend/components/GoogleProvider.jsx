@@ -8,7 +8,7 @@ const provider = new GoogleAuthProvider();
 export default function GoogleAuthButton() {
   async function handleGoogleLogin() {
     try {
-      const result = await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (err) {
       console.error("Google sign-in error:", err);
     }

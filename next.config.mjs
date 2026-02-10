@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+const enableProdSourceMaps = process.env.NEXT_ENABLE_PROD_SOURCEMAPS === "true";
 const nextConfig = {
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: enableProdSourceMaps,
   output: "standalone",
 };
 

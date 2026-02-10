@@ -19,12 +19,19 @@ export async function GET(req) {
     const authHeader = req.headers.get("authorization");
     if (!authHeader) return NextResponse.json({ error: "No token" }, { status: 401 });
     const token = authHeader.split(" ")[1];
-    const user = await verifyToken(token);
+    await verifyToken(token);
 
     const { searchParams } = new URL(req.url);
     const conversationId = searchParams.get("conversationId");
     if (!conversationId)
       return NextResponse.json({ error: "conversationId requis" }, { status: 400 });
+
+    const conversation = await getConversationById(conversationId);
+    if (!conversation)
+      return NextResponse.json({ error: "Conversation non trouvée" }, { status: 404 });
+    if (!Array.isArray(conversation.participants) || !conversation.participants.includes(user.uid)) {
+      return NextResponse.json({ error: "Accès à la conversation interdit" }, { status: 403 });
+    }
 
     const messages = await getMessages(conversationId);
     return NextResponse.json(messages);
@@ -61,6 +68,9 @@ export async function POST(req) {
     } else {
       conversation = await getConversationById(convId);
       if (!conversation) return NextResponse.json({ error: "Conversation non trouvée" }, { status: 404 });
+      if (!Array.isArray(conversation.participants) || !conversation.participants.includes(user.uid)) {
+        return NextResponse.json({ error: "Accès à la conversation interdit" }, { status: 403 });
+      }
     }
 
     // Sauvegarde du message utilisateur

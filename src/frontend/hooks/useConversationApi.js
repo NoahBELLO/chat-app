@@ -50,7 +50,7 @@ export default function useConversationApi() {
     }
   }
 
-  async function createConversation() {
+  async function createConversation(participants) {
     setLoading(true);
     setError(null);
     try {
