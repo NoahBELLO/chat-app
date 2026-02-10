@@ -1,28 +1,12 @@
 "use client";
 
 import React from "react";
-import { useAuth } from "@/frontend/hooks/useAuth";
 import ChatPage from "@/frontend/components/ChatPage";
-import AuthForm from "@/frontend/components/AuthForm";
 import CvGeneratorPage from "@/frontend/components/generate-cv/page";
 import { Button } from "@/frontend/components/ui/button";
 
 export default function Page() {
-  const user = useAuth();
-  const [mode, setMode] = (React.useState < "chat") | ("cv" > "chat");
-
-  if (user === undefined) {
-    return (
-      <div className="flex items-center justify-center h-dvh">
-        <span className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent mr-4"></span>
-        <span className="text-2xl font-semibold text-primary">
-          Chargement...
-        </span>
-      </div>
-    );
-  }
-
-  if (!user) return <AuthForm />;
+  const [mode, setMode] = React.useState("chat");
 
   return (
     <div className="h-dvh overflow-hidden flex flex-col">
