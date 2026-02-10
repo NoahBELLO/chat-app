@@ -1,9 +1,12 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/frontend/components/ui/button";
 import { useAuth } from "@/frontend/hooks/useAuth";
 import UserMenu from "./UserMenu";
 import EditUserPopup from "./popup/EditUserPopup";
 import LogoutPopup from "./popup/LogoutPopup";
+import Portal from "./Portal";
 
 export default function Sidebar({
   conversations,
@@ -16,6 +19,14 @@ export default function Sidebar({
   const [menuOpen, setMenuOpen] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+
+  useEffect(() => {
+    if (user === null) {
+      setMenuOpen(false);
+      setShowEditPopup(false);
+      setShowLogoutPopup(false);
+    }
+  }, [user]);
 
   return (
     <aside
@@ -59,44 +70,60 @@ export default function Sidebar({
         </div>
       </div>
 
-      {user && (
-        <div
-          className={`absolute bottom-0 left-0 w-full p-3 border-t bg-card flex items-center gap-2 cursor-pointer transition ${menuOpen ? "bg-muted" : "hover:bg-muted"}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <img
-            src={user.photoURL || "/default-avatar.png"}
-            alt="avatar"
-            className="w-8 h-8 rounded-full border"
-          />
-          <span className="font-medium text-sm">
-            {user.displayName || user.email}
-          </span>
-          {/* Sous-menu */}
+      {user === undefined && (
+        <div className="absolute bottom-0 left-0 w-full p-3 border-t">
+          <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+        </div>
+      )}
+
+      {user !== null && user !== undefined && (
+        <>
+          <div
+            className={`absolute bottom-0 left-0 w-full p-3 border-t bg-card flex items-center gap-2 cursor-pointer transition ${menuOpen ? "bg-muted" : "hover:bg-muted"}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <img
+              src={user.photoURL || "/img/defaultAvatar.webp"}
+              alt="avatar"
+              className="w-8 h-8 rounded-full border"
+            />
+            <span className="font-medium text-sm">
+              {user.displayName || user.email.split("@")[0]}
+            </span>
+          </div>
           {menuOpen && (
             <UserMenu
               user={user}
-              onEdit={() => setShowEditPopup(true)}
+              onEdit={(e) => {
+                setMenuOpen(false);
+                setTimeout(() => setShowEditPopup(true), 0);
+              }}
               onLogout={(e) => {
-                e.stopPropagation();
-                setShowLogoutPopup(true);
+                setMenuOpen(false);
+                setTimeout(() => setShowLogoutPopup(true), 0);
               }}
             />
           )}
-          {/* Popup modification info */}
+
           {showEditPopup && (
-            <EditUserPopup
-              user={user}
-              onClose={() => setShowEditPopup(false)}
-            />
+            <Portal>
+              <EditUserPopup
+                user={user}
+                onClose={() => setShowEditPopup(false)}
+              />
+            </Portal>
           )}
-          {/* Popup confirmation déconnexion */}
+
           {showLogoutPopup && (
-            <LogoutPopup
-              onCancel={() => setShowLogoutPopup(false)}
-            />
+            <Portal>
+              <LogoutPopup
+                onCancel={() => {
+                  setShowLogoutPopup(false);
+                }}
+              />
+            </Portal>
           )}
-        </div>
+        </>
       )}
     </aside>
   );

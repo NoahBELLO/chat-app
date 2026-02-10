@@ -4,7 +4,8 @@ import { useState } from "react";
 import { auth } from "@/frontend/lib/firebase";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 import GoogleAuthButton from "./GoogleProvider";
 
@@ -29,12 +30,14 @@ export default function AuthForm() {
     <input
       type="email"
       placeholder="Email"
+      id="email"
       className="px-4 py-2 rounded-lg bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary"
       onChange={(e) => setEmail(e.target.value)}
     />
     <input
       type="password"
       placeholder="Password"
+      id="password"
       className="px-4 py-2 rounded-lg bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-primary"
       onChange={(e) => setPassword(e.target.value)}
     />

@@ -1,23 +1,38 @@
-import { Button } from "@/frontend/components/ui/button";
+"use client";
 
 export default function UserMenu({ user, onEdit, onLogout }) {
   return (
-    <div className="absolute left-0 bottom-12 w-full bg-white border-t border-border shadow-lg p-4 flex flex-col items-center z-30">
-      <img
-        src={user.photoURL || "/default-avatar.png"}
-        alt="avatar"
-        className="w-16 h-16 rounded-full border mb-2 cursor-pointer"
+    <div className="absolute left-0 bottom-12 w-full bg-white border-t border-border shadow-2xl p-6 flex flex-col items-center z-30 rounded-xl transition-all duration-200">
+      <div
+        className="relative group mb-3"
         onClick={onEdit}
-      />
+        title="Modifier le profil"
+        style={{ cursor: "pointer" }}
+      >
+        <img
+          src={user.photoURL || "/img/defaultAvatar.webp"}
+          alt="avatar"
+          className="w-20 h-20 rounded-full border-4 border-primary shadow-md group-hover:scale-105 transition-transform duration-200"
+        />
+        <span className="absolute bottom-1 right-1 bg-primary text-white text-xs px-2 py-0.5 rounded-full opacity-80 group-hover:opacity-100 transition-opacity duration-200">
+          ✎
+        </span>
+      </div>
       <span
-        className="font-semibold text-lg mb-2 cursor-pointer"
+        className="font-bold text-black text-xl mb-1 cursor-pointer hover:text-primary transition-colors duration-150"
         onClick={onEdit}
       >
-        {user.displayName || user.email}
+        {user.displayName || user.email.split("@")[0]}
       </span>
-      <Button variant="destructive" className="w-full mt-2" onClick={onLogout}>
+      <span className="text-gray-500 text-sm mb-3">
+        {user.email.split("@")[0]}
+      </span>
+      <button
+        className="w-full flex-1 py-2 rounded-lg bg-destructive text-white font-semibold shadow hover:bg-destructive/80 transition-colors duration-150"
+        onClick={onLogout}
+      >
         Déconnexion
-      </Button>
+      </button>
     </div>
   );
 }
