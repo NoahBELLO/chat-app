@@ -19,7 +19,7 @@ export async function GET(req) {
     const authHeader = req.headers.get("authorization");
     if (!authHeader) return NextResponse.json({ error: "No token" }, { status: 401 });
     const token = authHeader.split(" ")[1];
-    await verifyToken(token);
+    const user = await verifyToken(token);
 
     const { searchParams } = new URL(req.url);
     const conversationId = searchParams.get("conversationId");
