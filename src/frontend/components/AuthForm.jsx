@@ -37,21 +37,11 @@ export default function AuthForm() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <div className="flex gap-2">
-        <button
-          className="flex-1 py-2 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/80 transition"
-          onClick={handleRegister}
-        >
-          S'inscrire
-        </button>
-        <button
-          className="flex-1 py-2 rounded-lg bg-accent text-accent-foreground font-semibold hover:bg-accent/80 transition"
-          onClick={handleLogin}
-        >
-          Connexion
-        </button>
-      </div>
-      <GoogleAuthButton />
+    <div className="flex gap-2">
+      <button className="flex-1 py-2 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/80 transition" onClick={handleRegister}>S'inscrire</button>
+      <button className="flex-1 py-2 rounded-lg bg-accent text-accent-foreground font-semibold hover:bg-accent/80 transition" onClick={handleLogin}>Connexion</button>
     </div>
+    <GoogleAuthButton/>
+  </div>
   );
 }
