@@ -12,21 +12,31 @@ export default function useConversationApi() {
     return await user.getIdToken();
   }
 
-  useEffect(async () => {
-    setLoading(true);
-    setError(null);
-    const token = await getToken();
-    fetch("/api/conversation", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        setConversations([]);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const token = await user.getIdToken();
+        const res = await fetch("/api/conversation", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!res.ok)
           throw new Error("Erreur lors du chargement des conversations");
-        return res.json();
-      })
-      .then((data) => setConversations(data))
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+        const data = await res.json();
+        setConversations(data);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   async function fetchConversations() {
