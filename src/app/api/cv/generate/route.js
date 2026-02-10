@@ -16,7 +16,6 @@ export async function POST(req) {
 
     const jobOffer = formData.get("jobOffer");
     const experiencesRaw = formData.get("experiences");
-    const cvPdf = formData.get("cvPdf");
     const languagesRaw = formData.get("languages");
     const educationRaw = formData.get("education");
 
@@ -26,15 +25,6 @@ export async function POST(req) {
     if (!experiencesRaw || typeof experiencesRaw !== "string") {
       return NextResponse.json(
         { error: "experiences requis (JSON string)" },
-        { status: 400 },
-      );
-    }
-    if (!cvPdf || typeof cvPdf === "string") {
-      return NextResponse.json({ error: "cvPdf requis" }, { status: 400 });
-    }
-    if (cvPdf.type !== "application/pdf") {
-      return NextResponse.json(
-        { error: "cvPdf doit être un PDF" },
         { status: 400 },
       );
     }
@@ -52,12 +42,6 @@ export async function POST(req) {
 
     const languages = languagesRaw ? JSON.parse(languagesRaw) : [];
     const education = educationRaw ? JSON.parse(educationRaw) : [];
-
-    const pdfMeta = {
-      name: cvPdf.name,
-      size: cvPdf.size,
-      type: cvPdf.type,
-    };
 
     const system = `Tu es un assistant RH spécialisé en rédaction de CV ATS.
                     Objectif: produire un CV clair, structuré, concis, orienté impact, adapté à l'offre.
@@ -79,10 +63,6 @@ export async function POST(req) {
                 FORMATION:
                 ${JSON.stringify(education, null, 2)}
 
-                CV PDF (meta seulement):
-                - name: ${pdfMeta.name}
-                - size: ${pdfMeta.size} bytes
-
                 Tâche:
                 1) Génère un CV structuré et optimisé.
                 2) Ajoute une section "Langues".
@@ -98,8 +78,9 @@ export async function POST(req) {
     return NextResponse.json({
       text,
       meta: {
-        pdf: pdfMeta,
         experienceCount: experiences.length,
+        languageCount: languages.length,
+        educationCount: education.length,
       },
     });
   } catch (e) {
