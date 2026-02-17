@@ -1,189 +1,142 @@
-# chat-app
+# Chat App – Jujutsu Kaisen
 
 Projet réalisé par **Noah Bello** et **Lorenzo Cesana-Rale** dans le cadre du cours **Piscine JS**.
 
-Ce projet est un **chatbot d’intelligence artificielle** inspiré de l’univers de **Jujutsu Kaisen**.  
-L’IA adopte l’ambiance, le style et l’énergie du manga/anime, avec des réponses immersives et une interface pensée comme une discussion avec un exorciste jujutsu.
+Ce projet est un **chatbot d’intelligence artificielle** inspiré de l’univers de **Jujutsu Kaisen**. L’IA adopte l’ambiance, le style et l’énergie du manga/anime, avec des réponses immersives et une interface pensée comme une discussion avec un exorciste jujutsu.
 
-L’objectif du projet est de mettre en pratique les concepts clés de JavaScript, du frontend moderne et des API, tout en construisant une application complète et interactive.
+## Fonctionnalités principales
 
-# Cahier des charges – Projet Chat Web
+- Chat en temps réel avec une IA (API Groq)
+- Historique des conversations sauvegardé en base de données (Firebase)
+- Génération de CV, lettres de motivation, quiz, analyse de CV, etc.
+- Authentification via Firebase
+- Interface moderne avec React, TailwindCSS et composants personnalisés
+- Conteneurisation complète avec Docker
 
-## Objectif pédagogique
-
-L’objectif de ce projet est de permettre aux apprenants de **créer une application de chat simple**, moderne et fonctionnelle, en utilisant **Next.js**, **JavaScript** et **SQLite**.
-
-Le projet est volontairement simple, afin que les apprenants se concentrent sur :
-
-- la compréhension du lien frontend / backend
-- l’organisation d’un projet Next.js
-- l’utilisation d’une base de données locale
-- les bases d’une API web
-
-Aucun TypeScript n’est utilisé dans ce projet.
-
-## Contexte du projet
-
-Vous devez développer une application web de type **chat**.
-
-Le fonctionnement attendu est le suivant :
-
-- un utilisateur écrit un message
-- le message est envoyé au serveur
-- une réponse est générée par une intelligence artificielle
-- les messages sont enregistrés dans une base de données
-- l’historique des messages est affiché à l’écran
-
-L’application est contenue dans **un seul projet Next.js**, avec **un seul Dockerfile.**
-
-## Technologies imposées
-
-Les technologies suivantes doivent être utilisées :
+## Technologies utilisées
 
 - **Framework** : Next.js (App Router)
 - **Langage** : JavaScript (pas de TypeScript)
-- **Frontend** : React
+- **Frontend** : React 19, TailwindCSS
 - **Backend** : API Routes Next.js
-- **Base** de données : SQLite
-- **Accès** base de données : Prisma
+- **Base de données** : Firebase
 - **IA** : API Groq
-- **Containerisation** : Docker (un seul Dockerfile)
+- **Authentification** : Firebase / Firebase Admin
+- **Containerisation** : Docker, Docker Compose
 
-## Architecture du projet (obligatoire)
-
-La structure suivante doit être respectée.
-
-### Description des répertoires
-
-| Répertoire/Fichier     | Rôle                  | Description simple                                                         |
-| ---------------------- | --------------------- | -------------------------------------------------------------------------- |
-| `frontend/`            | Interface utilisateur | Contient tout le code React affiché à l’écran (composants, hooks, styles). |
-| `frontend/components/` | Composants UI         | Composants React (chat, messages, formulaire, etc.).                       |
-| `frontend/hooks/`      | Logique frontend      | Hooks React pour gérer l’état et les appels API.                           |
-| `frontend/styles/`     | Styles                | Fichiers CSS pour le style de l’application.                               |
-| `backend/`             | Logique serveur       | Contient toute la logique métier côté serveur.                             |
-| `backend/services/`    | Services              | Fonctions métier (appel IA, sauvegarde des messages).                      |
-| `backend/lib/`         | Outils backend        | Connexion à la base de données SQLite.                                     |
-| `backend/prisma/`      | Base de données       | Schéma Prisma et configuration SQLite.                                     |
-| `app/`                 | Next.js App Router    | Point d’entrée de l’application Next.js.                                   |
-| `app/api/`             | API Routes            | API accessibles via /api/\*.                                               |
-| `app/page.js`          | Page principale       | Page principale de l’application.                                          |
-| `data/`                | Données               | Contient le fichier de base de données SQLite.                             |
-| `Dockerfile`           | Déploiement           | Instructions pour construire et lancer l’application avec Docker.          |
-| `package.json`         | Dépendances           | Liste des dépendances et scripts du projet.                                |
-| `README.md`            | Documentation         | Explication du projet et instructions de lancement.                        |
+## Structure du projet
 
 ```
-chat-app/
-
-chat-app/
-├── frontend/                # Interface utilisateur (React)
-│   ├── components/
-│   ├── hooks/
-│   └── styles/
-│
-├── backend/                 # Logique métier serveur
-│   ├── services/
-│   ├── lib/
-│   └── prisma/
-│
-├── app/                     # Next.js App Router
-│   ├── api/
-│   ├── page.js
-│   └── layout.js
-│
-├── data/                    # Base de données SQLite
-│   └── app.db
-│
-├── Dockerfile
-├── package.json
-└── README.md
+├── backend/                # Code backend (librairies, services, Prisma)
+│   ├── lib/                # Librairies backend (connexion DB, Firebase admin)
+│   ├── prisma/             # Schéma Prisma et migrations
+│   └── services/           # Services métier (conversation, message, quiz)
+├── data/                   # Dossier pour la base SQLite (app.db)
+├── frontend/               # Code frontend (React, hooks, styles)
+│   ├── components/         # Composants React (UI, chat, formulaires, etc.)
+│   ├── hooks/              # Hooks personnalisés (API, auth, etc.)
+│   ├── lib/                # Fonctions utilitaires frontend
+│   ├── services/           # Services côté client
+│   └── styles/             # Fichiers CSS (globals.css)
+├── public/                 # Fichiers statiques (images, etc.)
+├── src/app/                # Pages et routes API Next.js (App Router)
+│   └── api/                # Routes API (chat, conversation, cv, quizz, etc.)
+├── .env                    # Variables d’environnement (API keys, etc.)
+├── Dockerfile              # Build et lancement de l’app en conteneur
+├── docker-compose.yml      # Orchestration multi-conteneurs (ici, un seul service)
+├── package.json            # Dépendances et scripts npm/pnpm
+├── prisma.config.ts        # Configuration Prisma
+└── server.js               # Serveur HTTP custom pour Next.js
 ```
 
-## Fonctionnalités attendues
+## Installation & Lancement
 
-### 1. Interface utilisateur
+### Prérequis
 
-L’interface doit permettre :
+- Node.js 22+ (uniquement pour le développement local)
+- pnpm (ou npm/yarn) (uniquement pour le développement local)
+- Docker (recommandé pour exécuter l’application sans rien installer d’autre)
 
-- d’écrire un message dans un champ texte
-- d’envoyer le message via un bouton
-- d’afficher la liste des messages (utilisateur et IA)
+### 1. Cloner le dépôt
 
-L’interface doit rester simple et lisible.
+```bash
+git clone <repo-url>
+cd chat-app
+```
 
-### 2. Envoi d’un message
+### 2. Installer les dépendances (optionnel)
 
-Lorsqu’un utilisateur envoie un message :
+> ⚠️ **Si tu utilises uniquement Docker, tu peux ignorer cette étape :**
+> L’installation locale des dépendances (`pnpm install` ou `npm install`) n’est nécessaire que si tu veux développer ou tester l’application sans Docker. Le conteneur Docker installe tout automatiquement lors du build.
 
-- le frontend appelle une route API (`/api/chat`)
-- le backend reçoit le message
-- le message est vérifié (non vide)
-- le message est enregistré dans SQLite
+```bash
+pnpm install # ou npm install
+```
 
-### 3. Réponse de l’IA
+### 3. Configurer les variables d’environnement
 
-Le backend doit :
+Copier le fichier `.env` fourni ou créer le vôtre à la racine :
 
-- envoyer le message à l’API Groq
-- recevoir la réponse
-- enregistrer la réponse dans SQLite
-- renvoyer la réponse au frontend
+```
+GROQ_API_KEY=...
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+FIREBASE_PROJECT_ID=...
+FIREBASE_CLIENT_EMAIL=...
+FIREBASE_PRIVATE_KEY=...
+MODEL_CHAT=openai/gpt-oss-20b
+```
 
-### 4. Base de données
+### 4. Générer le client Prisma et la base de données
 
-La base de données SQLite doit contenir au minimum :
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-- le contenu du message
-- le rôle du message (`user` ou `assistant`)
-- la date de création
+### 5. Lancer en développement
 
-## Règles de développement
+```bash
+pnpm dev # ou npm run dev
+```
 
-Les règles suivantes doivent être respectées :
+L’application sera disponible sur http://localhost:3000
 
-- JavaScript uniquement (pas de TypeScript)
-- séparation claire entre frontend et backend
-- le frontend ne doit jamais accéder directement à la base de données
-- toutes les requêtes passent par `/api/*`
-- code lisible et correctement indenté
-- noms de fichiers simples et explicites
+### 6. Lancer en production (Docker)
 
-## Contraintes techniques
+```bash
+docker compose up --build
+```
 
-- un seul projet Next.js
-- un seul Dockerfile
-- pas de base de données externe
-- pas d’authentification
-- pas de fonctionnalités inutiles
+L’application sera disponible sur http://localhost:3001
 
-## Livrables attendus
+## Scripts utiles
 
-Les apprenants doivent fournir :
+- `pnpm dev` : Démarre le serveur Next.js en mode développement
+- `pnpm build` : Build l’application pour la production
+- `pnpm start` : Démarre le serveur Next.js en mode production
+- `pnpm lint` : Lint le code avec ESLint
 
-- le code source du projet
-- un fichier `README.md` contenant :
-  - les instructions pour lancer le projet
-  - une explication de la structure des dossiers
-  - une description du fonctionnement de l’application
+## Description des dossiers principaux
 
-## Critères d’évaluation
+| Dossier/Fichier         | Rôle                                    |
+|------------------------|------------------------------------------|
+| `frontend/`            | Interface utilisateur React              |
+| `backend/`             | Code backend, Prisma, services           |
+| `src/app/api/`         | Routes API Next.js (chat, cv, quizz, etc)|
+| `data/`                | Base de données SQLite                   |
+| `public/`              | Fichiers statiques (images, etc.)        |
+| `.env`                 | Variables d’environnement                |
+| `Dockerfile`           | Build et exécution Docker                |
+| `docker-compose.yml`   | Orchestration Docker Compose             |
+| `server.js`            | Serveur HTTP custom pour Next.js         |
 
-Le projet sera évalué selon :
+## Auteurs
 
-- le respect du cahier des charges
-- le bon fonctionnement du chat
-- la clarté de l’architecture
-- la lisibilité du code JavaScript
-- la qualité du README
+- Noah Bello
+- Lorenzo Cesana-Rale
 
-## Objectif final
+## Licence
 
-À la fin du projet, les apprenants doivent être capables de :
-
-- créer une application Next.js en JavaScript
-- comprendre le rôle des API Routes
-- utiliser une base de données SQLite
-- organiser un projet web correctement
-
-**Ce cahier des charges est volontairement simple et pédagogique.** L’objectif n’est pas la performance, mais la compréhension.
+Projet réalisé dans un cadre pédagogique. Utilisation libre à des fins d’apprentissage.
