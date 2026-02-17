@@ -3,7 +3,7 @@
 export default function ResultSection({ loading, result, resultRef }) {
   return (
     <section className="rounded-xl border bg-card p-4">
-      <h2 className="mb-2 font-medium">Résultat (Quizz)</h2>
+      <h2 className="mb-2 font-medium">Résultat (Analyse)</h2>
 
       {loading ? (
         <div className="animate-pulse rounded-xl border bg-background p-4 text-sm text-muted-foreground">
@@ -13,7 +13,7 @@ export default function ResultSection({ loading, result, resultRef }) {
         result
       ) : (
         <div className="rounded-xl border bg-background p-4 text-sm text-muted-foreground">
-          Clique sur “Générer” pour obtenir un Quizz adapté.
+          Clique sur “Analyser” pour obtenir l'analyse.
         </div>
       )}
 
