@@ -18,7 +18,6 @@ export async function getQuizBySlug(slug) {
   return { id: d.id, ...d.data() };
 }
 
-
 export async function saveResultat({
   slug,
   quizTitle = null,
@@ -47,6 +46,18 @@ export async function saveResultat({
     total,
     reponses,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  return { id: docRef.id };
+}
+
+export async function createQuizz(quizzData) {
+  if (!quizzData || !quizzData.title || !quizzData.questions) {
+    throw new Error("Quizz data (title, questions) must be provided");
+  }
+
+  const docRef = await db.collection("quizz").add({
+    ...quizzData,
   });
 
   return { id: docRef.id };
