@@ -1,6 +1,8 @@
+"use client";
+
 import * as React from "react"
 
-import { cn } from "src/frontend/lib/utils"
+import { cn } from "@/frontend/lib/utils"
 
 function Textarea({
   className,
