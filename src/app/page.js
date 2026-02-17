@@ -8,6 +8,7 @@ import { Button } from "@/frontend/components/ui/button";
 import AuthForm from "@/frontend/components/AuthForm";
 import QuizzGeneratorPage from "@/frontend/components/generate-quizz/page";
 import AnalyzerCvPage from "@/frontend/components/analyzer-cv/page";
+import ResultQuizzPage from "@/frontend/components/result-quizz/page";
 
 export default function Page() {
   const [mode, setMode] = React.useState("chat");
@@ -54,6 +55,12 @@ export default function Page() {
             Générateur de Quizz
           </Button>
           <Button
+            variant={mode === "result" ? "default" : "secondary"}
+            onClick={() => setMode("result")}
+          >
+            Afficher les résultats de quizz
+          </Button>
+          <Button
             variant={mode === "analyse" ? "default" : "secondary"}
             onClick={() => setMode("analyse")}
           >
@@ -69,8 +76,10 @@ export default function Page() {
           <CvGeneratorPage />
         ) : mode === "quizz" ? (
           <QuizzGeneratorPage />
-        ) : (
+        ) : mode === "analyse" ? (
           <AnalyzerCvPage />
+        ) : (
+          <ResultQuizzPage />
         )}
       </div>
     </div>
