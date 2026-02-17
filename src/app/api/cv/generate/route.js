@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getGroqResponse } from "@/backend/services/messageService";
-
+import cvPrompt from "./cvPrompt.json";
 /**
  * POST /api/cv/generate
  * Attend un multipart/form-data avec :
@@ -43,32 +43,17 @@ export async function POST(req) {
     const languages = languagesRaw ? JSON.parse(languagesRaw) : [];
     const education = educationRaw ? JSON.parse(educationRaw) : [];
 
-    const system = `Tu es un assistant RH spécialisé en rédaction de CV ATS.
-                    Objectif: produire un CV clair, structuré, concis, orienté impact, adapté à l'offre.
-                    Règles:
-                    - Langue: français
-                    - Utiliser des bullets d'impact (verbe d'action + résultat + métrique si possible)
-                    - Ne pas inventer de technologies non mentionnées
-                    - Sortie en Markdown (titres + sections)`;
-
-    const user = `OFFRE D'EMPLOI:
-                ${jobOffer}
-
-                EXPERIENCES:
-                ${JSON.stringify(experiences, null, 2)}
-
-                LANGUES:
-                ${JSON.stringify(languages, null, 2)}
-
-                FORMATION:
-                ${JSON.stringify(education, null, 2)}
-
-                Tâche:
-                1) Génère un CV structuré et optimisé.
-                2) Ajoute une section "Langues".
-                3) Ajoute une section "Formation".
-                4) N’invente aucune information.
-                5) Signale clairement les champs manquants.`;
+    const system = cvPrompt.system;    
+    const user = `OFFRE D'EMPLOI: ${jobOffer}
+                  EXPERIENCES: ${JSON.stringify(experiences, null, 2)}
+                  LANGUES: ${JSON.stringify(languages, null, 2)}
+                  FORMATION: ${JSON.stringify(education, null, 2)}
+                  Format attendu :
+                    - Langue : ${cvPrompt.format.language}
+                    - Sortie : ${cvPrompt.format.output}
+                    - Sections : ${cvPrompt.format.sections.join(", ")}
+                  Tâche:
+                  ${cvPrompt.task.map((t, i) => `${i + 1}) ${t}`).join('\n')}`;
 
     const text = await getGroqResponse([
       { role: "system", content: system },

@@ -6,6 +6,7 @@ import ChatPage from "@/frontend/components/ChatPage";
 import CvGeneratorPage from "@/frontend/components/generate-cv/page";
 import { Button } from "@/frontend/components/ui/button";
 import AuthForm from "@/frontend/components/AuthForm";
+import QuizzGeneratorPage from "@/frontend/components/generate-quizz/page";
 
 export default function Page() {
   const [mode, setMode] = React.useState("chat");
@@ -23,7 +24,7 @@ export default function Page() {
   }
 
   if (!user) return <AuthForm />;
-  
+
   return (
     <div className="h-dvh overflow-hidden flex flex-col">
       <div className="p-4 border-b">
@@ -45,11 +46,17 @@ export default function Page() {
           >
             Générateur de CV
           </Button>
+          <Button
+            variant={mode === "quizz" ? "default" : "secondary"}
+            onClick={() => setMode("quizz")}
+          >
+            Générateur de Quizz
+          </Button>
         </div>
       </div>
 
       <div className="flex-1 min-h-0">
-        {mode === "chat" ? <ChatPage /> : <CvGeneratorPage />}
+        {mode === "chat" ? <ChatPage /> : mode === "cv" ? <CvGeneratorPage /> : <QuizzGeneratorPage />}
       </div>
     </div>
   );
